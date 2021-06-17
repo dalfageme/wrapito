@@ -1,4 +1,4 @@
 export { wrap } from './wrap'
 export { configure } from './config'
 export { highlightNotUtilizedResponses } from './notUtilizedResponses'
-export { assertions } from './assertions'
+export { assertions } from './assertions/index.ts'

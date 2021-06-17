@@ -1,31 +1,40 @@
 import deepEqual from 'deep-equal'
-import { green, red } from 'chalk'
+import chalk from 'chalk'
 
-const emptyErrorMessage = (path) => ({
+interface Body {
+
+}
+
+interface Options {
+  method: string,
+  body: object,
+}
+
+const emptyErrorMessage = (path: string) => ({
   pass: false,
   message: () => `🌯 Burrito: ${path} ain't got called`,
 })
 
-const fetchLengthErrorMessage = (path, expectLength, currentLength) => ({
+const fetchLengthErrorMessage = (path: string, expectLength: number, currentLength: number) => ({
   pass: false,
   message: () => `🌯 Burrito: ${path} is called ${currentLength} times, you expected ${expectLength} times`,
 })
 
-const methodDoesNotMatchErrorMessage = (expected, received) => ({
+const methodDoesNotMatchErrorMessage = (expected: string, received: string) => ({
   pass: false,
   message: () =>
     `🌯 Burrito: Fetch method does not match, expected ${expected} received ${received}`,
 })
 
-const bodyDoesNotMatchErrorMessage = (expected, received) => ({
+const bodyDoesNotMatchErrorMessage = (expected: object, received: object) => ({
   pass: false,
   message: () =>
     `🌯 Burrito: Fetch body does not match.
 Expected:
-${green(JSON.stringify(expected, null, ' '))}
+${chalk.green(JSON.stringify(expected, null, ' '))}
 
 Received:
-${red(JSON.stringify(received, null, ' '))}`,
+${chalk.red(JSON.stringify(received, null, ' '))}`,
 })
 
 const successMessage = () => ({
@@ -33,23 +42,24 @@ const successMessage = () => ({
   message: () => undefined,
 })
 
-const findRequestsByPath = path =>
-  fetch.mock.calls.filter(call => call[0].url.includes(path))
+const findRequestsByPath = (path: string) => {
+  return fetch.mock.calls.filter((call: any) => call[0].url.includes(path))
+}
 
-const getRequestsMethods = requests =>
-  requests.map(request => request[0]?.method)
+const getRequestsMethods = (requests: any) =>
+  requests.map((request: any) => request[0]?.method)
 
-const getRequestsBodies = requests =>
-  requests.map(request => {
+const getRequestsBodies = (requests: any) =>
+  requests.map((request: any) => {
     if (!request[0]._bodyInit) return {}
 
     return JSON.parse(request[0]._bodyInit)
   })
 
-const methodDoesNotMatch = (expectedMethod, receivedRequestsMethods) =>
+const methodDoesNotMatch = (expectedMethod: string, receivedRequestsMethods: string[]) =>
   expectedMethod && !receivedRequestsMethods.includes(expectedMethod)
 
-const bodyDoesNotMatch = (expectedBody, receivedRequestsBodies) => {
+const bodyDoesNotMatch = (expectedBody: object, receivedRequestsBodies: object[]) => {
   if (!expectedBody) return false
 
   const anyRequestMatch = receivedRequestsBodies
@@ -59,9 +69,9 @@ const bodyDoesNotMatch = (expectedBody, receivedRequestsBodies) => {
   return anyRequestMatch
 }
 
-const empty = requests => requests.length === 0
+const empty = (requests: any) => requests.length === 0
 
-const toHaveBeenFetchedWith = (path, options) => {
+const toHaveBeenFetchedWith = (path: string, options: Options) => {
   const targetRequests = findRequestsByPath(path)
 
   if (empty(targetRequests)) {
@@ -85,12 +95,12 @@ const toHaveBeenFetchedWith = (path, options) => {
   return successMessage()
 }
 
-const toHaveBeenFetched = (path) => {
+const toHaveBeenFetched = (path: string) => {
   const requests = findRequestsByPath(path)
   return !requests.length ? emptyErrorMessage(path) : successMessage()
 }
 
-const toHaveBeenFetchedTimes = (path, expectedLength) => {
+const toHaveBeenFetchedTimes = (path: string, expectedLength: number) => {
   const requests = findRequestsByPath(path)
   return requests.length !== expectedLength
     ? fetchLengthErrorMessage(path, expectedLength, requests.length)
