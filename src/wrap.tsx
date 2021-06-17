@@ -1,5 +1,5 @@
 import React from 'react'
-import { yellow } from 'chalk'
+import chalk from 'chalk'
 
 import { mockFetch } from './mockFetch'
 import { mockNetwork } from './mockNetwork'
@@ -10,7 +10,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  global.fetch.mockRestore()
+  (global.fetch as jest.MockedFunction<typeof fetch>).mockRestore()
 })
 
 const extendWith = (extensions, options) => {
@@ -56,7 +56,7 @@ const wrap = options => {
   return {
     withProps: props => wrap({ ...options, props }),
     withMocks: responses => {
-      console.warn(yellow('withMocks is deprecated. Use withNetwork instead.'))
+      console.warn(chalk.yellow('withMocks is deprecated. Use withNetwork instead.'))
       return wrap({ ...options, responses, hasMocks: true })
     },
     withNetwork: (responses = []) => {
