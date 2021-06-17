@@ -38,7 +38,16 @@ const extendWith = (extensions, options) => {
   )
 }
 
-const wrap = options => {
+// interface Wrap {
+//   withNetwork: (responses: object) => Wrap,
+//   withMocks: (responses: object) => Wrap,
+//   atPath: (path: string) => Wrap,
+//   withProps: (props: object) => Wrap,
+//   debugRequests: () => Wrap,
+//   mount: () => object,
+// }
+
+const wrap = (options) => {
   const isComponent = typeof options === 'function'
   const isWrappedComponent = typeof options.WrappedComponent === 'function'
 
