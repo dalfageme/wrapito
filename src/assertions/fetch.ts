@@ -1,9 +1,12 @@
 import deepEqual from 'deep-equal'
 import chalk from 'chalk'
 
-interface Body {
+let fetch
 
-}
+beforeEach(() => {
+  fetch = jest.fn();
+  global.fetch = fetch;
+})
 
 interface Options {
   method: string,
